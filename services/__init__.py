@@ -28,6 +28,7 @@ from .promotions_service import (
     delete_promotion,
     calculate_discount_price,
     get_promotion_by_id,
-    update_promotion
+    update_promotion,
+    get_all_promotion_histories
     
 )

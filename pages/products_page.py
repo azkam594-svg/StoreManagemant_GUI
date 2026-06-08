@@ -17,7 +17,7 @@ def show_products_page(parent):
 class ProductPage(tk.Frame):
     
     def __init__(self, parent):
-        super().__init__(parent, bg="#E0E0E0")
+        super().__init__(parent, bg="#E9E9E9")
 
         # Variable untuk menyimpan keyword pencarian
         self.search_var = tk.StringVar()
@@ -37,7 +37,7 @@ class ProductPage(tk.Frame):
             self,
             text="Manage Products",
             font=("Arial", 24, "bold"),
-            bg="#E0E0E0",
+            bg="#E9E9E9",
             fg="#1f2937"
         )
         title.pack(anchor="w", padx=30, pady=(30, 15))
@@ -55,7 +55,7 @@ class ProductPage(tk.Frame):
         - Kurangi Stok
         """
 
-        toolbar = tk.Frame(self, bg="#E0E0E0")
+        toolbar = tk.Frame(self, bg="#E9E9E9")
         toolbar.pack(fill="x", padx=30, pady=(0, 10))
 
         # Input pencarian
@@ -74,9 +74,6 @@ class ProductPage(tk.Frame):
             bg="#2563eb",
             fg="white",
             font=("Arial", 10, "bold"),
-            relief="flat",
-            padx=14,
-            pady=7,
             command=self.search_product
         )
         search_button.pack(side="left", padx=4)
@@ -88,9 +85,6 @@ class ProductPage(tk.Frame):
             bg="#6b7280",
             fg="white",
             font=("Arial", 10, "bold"),
-            relief="flat",
-            padx=14,
-            pady=7,
             command=self.reset_search
         )
         reset_button.pack(side="left", padx=4)
@@ -102,9 +96,6 @@ class ProductPage(tk.Frame):
             bg="#dc2626",
             fg="white",
             font=("Arial", 10, "bold"),
-            relief="flat",
-            padx=14,
-            pady=7,
             command=self.delete_selected_product
         )
         delete_button.pack(side="right", padx=4)
@@ -116,9 +107,6 @@ class ProductPage(tk.Frame):
             bg="#f59e0b",
             fg="white",
             font=("Arial", 10, "bold"),
-            relief="flat",
-            padx=14,
-            pady=7,
             command=self.open_edit_form
         )
         edit_button.pack(side="right", padx=4)
@@ -130,9 +118,6 @@ class ProductPage(tk.Frame):
             bg="#16a34a",
             fg="white",
             font=("Arial", 10, "bold"),
-            relief="flat",
-            padx=14,
-            pady=7,
             command=self.open_add_form
         )
         add_button.pack(side="right", padx=4)
@@ -144,9 +129,6 @@ class ProductPage(tk.Frame):
             bg="#7c2d12",
             fg="white",
             font=("Arial", 10, "bold"),
-            relief="flat",
-            padx=14,
-            pady=7,
             command=self.decrease_stock
         )
         decrease_stock_button.pack(side="right", padx=4)
@@ -158,9 +140,6 @@ class ProductPage(tk.Frame):
             bg="#0f766e",
             fg="white",
             font=("Arial", 10, "bold"),
-            relief="flat",
-            padx=14,
-            pady=7,
             command=self.increase_stock
         )
         increase_stock_button.pack(side="right", padx=4)

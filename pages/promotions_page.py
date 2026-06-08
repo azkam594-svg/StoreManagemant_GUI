@@ -29,12 +29,12 @@ class PromotionsPage(tk.Frame):
     
 
      
-    def create_header(self):
+    def create_header(self,):
         title = tk.Label(
             self,
             text="Manage Promotions",
             font=("Arial", 24, "bold"),
-            bg="#f5f7fb",
+            bg="#E9E9E9",
             fg="#1f2937"
         )
         title.pack(anchor="w", padx=30, pady=(30, 15))
@@ -48,9 +48,10 @@ class PromotionsPage(tk.Frame):
         - tambah
         - edit
         - hapus
+        - Riwayat promosi
         """
         
-        toolbar = tk.Frame(self, bg="#E0E0E0")
+        toolbar = tk.Frame(self, bg="#E9E9E9")
         toolbar.pack(fill="x", padx=30, pady=(0, 10))
         
         
@@ -71,9 +72,6 @@ class PromotionsPage(tk.Frame):
             bg="#2563eb",
             fg="white",
             font=("Arial", 10, "bold"),
-            relief="flat",
-            padx=14,
-            pady=7,
             command=self.search_promotion
         )
         search_button.pack(side="left", padx=4)
@@ -86,9 +84,6 @@ class PromotionsPage(tk.Frame):
             bg="#6b7280",
             fg="white",
             font=("Arial", 10, "bold"),
-            relief="flat",
-            padx=14,
-            pady=7,
             command=self.reset_search
         )
         reset_button.pack(side="left", padx=4)
@@ -96,15 +91,12 @@ class PromotionsPage(tk.Frame):
     
         # Add Button
         add_button = tk.Button(
-        toolbar,
-        text="+ Tambah Promo",
-        bg="#16a34a",
-        fg="white",
-        font=("Arial", 10, "bold"),
-        relief="flat",
-        padx=14,
-        pady=7,
-        command=self.open_add_form
+            toolbar,
+            text="+ Tambah Promo",
+            bg="#16a34a",
+            fg="white",
+            font=("Arial", 10, "bold"),
+            command=self.open_add_form
         )
         add_button.pack(side="right", padx=4)
         
@@ -116,9 +108,6 @@ class PromotionsPage(tk.Frame):
             bg="#f59e0b",
             fg="white",
             font=("Arial", 10, "bold"),
-            relief="flat",
-            padx=14,
-            pady=7,
             command=self.open_edit_form
         )
         edit_button.pack(side="right", padx=4)
@@ -127,17 +116,26 @@ class PromotionsPage(tk.Frame):
         # Delete Button
         delete_button = tk.Button(
             toolbar,
-            text="Hapus Promo",
-            bg="#dc2626",
+            text="Hapus",
+            font=("Arial", 10),
+            bg="#C50707",
             fg="white",
-            font=("Arial", 10, "bold"),
-            relief="flat",
-            padx=14,
-            pady=7,
             command=self.delete_selected_promotion
         )
         delete_button.pack(side="right", padx=4)
-    
+        
+        
+        # PromotionHistories
+        history_button = tk.Button(
+            toolbar,
+            text="Riwayat Promosi",
+            font=("Arial", 10),
+            bg="#84BD00",
+            fg="white",
+            command= self.open_promotion_history
+        )
+        history_button.pack(side="right", padx= 5)
+        
     
     # TABEL
     def create_table(self):
@@ -229,7 +227,10 @@ class PromotionsPage(tk.Frame):
         selected_item = self.table.selection()
 
         if not selected_item:
-            messagebox.showwarning()
+            messagebox.showwarning(
+                "Pilih Produk",
+                "Pilih salah satu produk terlebih dahulu."
+            )
             return None
 
         item_values = self.table.item(selected_item[0], "values")
@@ -293,8 +294,11 @@ class PromotionsPage(tk.Frame):
         if promotion_id is None:
             return
 
-        confirm = messagebox.askyesno()
-
+        confirm = messagebox.askyesno(
+            "Konfirmasi Hapus",
+            f"Yakin ingin menghapus promosi ID {promotion_id}?"
+        )
+        
         if not confirm:
             return
 
@@ -307,14 +311,74 @@ class PromotionsPage(tk.Frame):
             messagebox.showerror("Gagal", result)
             return
         
-        promotion = result
+    # Riwayat promosi
+    def open_promotion_history(self):
+        history_window = tk.Toplevel(self)
+        history_window.title("Riwayat Promosi")
+        history_window.geometry("900x400")
+        history_window.resizable(False, False)
         
-        PromotionForm(
-            master=self,
-            mode="edit",
-            promotion=promotion,
-            on_success=self.load_promotions
+        title_label = tk.Label(
+        history_window,
+        text="Riwayat Promosi",
+        font=("Arial", 16, "bold")
         )
+        title_label.pack(pady=10)
+
+        columns = (
+            "id",
+            "promotion_id",
+            "product_id",
+            "action",
+            "old_discount",
+            "new_discount",
+            "status",
+            "created_at"
+        )
+
+        history_table = ttk.Treeview(
+            history_window,
+            columns=columns,
+            show="headings"
+        )
+
+        history_table.heading("id", text="ID")
+        history_table.heading("promotion_id", text="ID Promosi")
+        history_table.heading("product_id", text="ID Produk")
+        history_table.heading("action", text="Aksi")
+        history_table.heading("old_discount", text="Diskon Lama")
+        history_table.heading("new_discount", text="Diskon Baru")
+        history_table.heading("status", text="Status")
+        history_table.heading("created_at", text="Tanggal")
+
+        history_table.column("id", width=50, anchor="center")
+        history_table.column("promotion_id", width=100, anchor="center")
+        history_table.column("product_id", width=100, anchor="center")
+        history_table.column("action", width=100, anchor="center")
+        history_table.column("old_discount", width=120, anchor="center")
+        history_table.column("new_discount", width=120, anchor="center")
+        history_table.column("status", width=100, anchor="center")
+        history_table.column("created_at", width=180, anchor="center")
+
+        history_table.pack(fill="both", expand=True, padx=10, pady=10)
+
+        histories = services.get_all_promotion_histories()
+
+        for history in histories:
+            history_table.insert(
+                "",
+                "end",
+                values=(
+                    history["id"],
+                    history["promotion_id"],
+                    history["product_id"],
+                    history["action"],
+                    f'{history["old_discount"]}%',
+                    f'{history["new_discount"]}%',
+                    history["status"],
+                    history["created_at"]
+                )
+            )
         
         
         
