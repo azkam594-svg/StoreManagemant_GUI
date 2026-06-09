@@ -48,7 +48,7 @@ class DashboardPage(tk.Frame):
         total_products = services.get_total_products()
         total_stock = services.get_total_stock()
         total_inventory_value = services.get_total_inventory_value()
-        low_stock_products = services.get_low_stock_products(limit=5)
+        low_stock_products = services.get_low_stock_products(limit_stock=5)
         
         
         cards = [
@@ -142,7 +142,7 @@ class DashboardPage(tk.Frame):
         
         table.pack(fill="both", expand=True, padx=20, pady=(0, 20))
         
-        low_stock_products = services.get_low_stock_products(limit=5)
+        low_stock_products = services.get_low_stock_products(limit_stock=5)
         if len(low_stock_products) == 0:
             table.insert(
                 "",

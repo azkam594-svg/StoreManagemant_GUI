@@ -36,21 +36,3 @@ promotions = [
 ]
 
 promotion_histories = []
-
-
-transactions = [
-    {
-        "id": 1,
-        "sku": "ASUS001",
-        "quantity": 2,
-        "type": "Keluar",
-        "date": "2026-06-08 09:00:00"
-    },
-    {
-        "id": 2,
-        "sku": "LOGI001",
-        "quantity": 3,
-        "type": "Masuk",
-        "date": "2026-06-08 10:30:00"
-    }
-]
