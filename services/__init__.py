@@ -8,7 +8,6 @@ from .products_service import (
     delete_product,
     decrease_product_stock,
     increase_product_stock,
-    get_product_status,
     convert_to_int,
 
     
@@ -26,7 +25,6 @@ from .promotions_service import (
     get_all_promotions,
     add_promotion,
     delete_promotion,
-    calculate_discount_price,
     get_promotion_by_id,
     update_promotion,
     get_all_promotion_histories
@@ -34,12 +32,22 @@ from .promotions_service import (
 )
 
 
+from.transactions_service import (
+    calculate_balance,
+    export_transactions_csv,
+    get_transactions,
+    get_transaction_summary,
+    record_transaction
+)
+
+
+# =========================
+# STATISTICS SERVICE
+# =========================
 from .statistic_service import (
-    # get_statistics_summary,
-    # get_quantity_chart_data,
-    # get_revenue_chart_data,
     get_statistics_summary,
     get_quantity_chart_data,
     get_revenue_chart_data,
-    get_low_stock_products
+    get_promotion_sales_by_product,
+    get_recent_transactions,
 )

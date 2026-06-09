@@ -28,7 +28,7 @@ class PromotionsPage(tk.Frame):
         self.load_promotions()
     
 
-     
+    #  HEADER
     def create_header(self,):
         title = tk.Label(
             self,
@@ -39,7 +39,7 @@ class PromotionsPage(tk.Frame):
         )
         title.pack(anchor="w", padx=30, pady=(30, 15))
         
-        
+    # BUTTON  
     def create_toolbar(self):
         """
         membuat area tombol

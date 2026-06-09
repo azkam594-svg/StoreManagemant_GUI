@@ -308,68 +308,17 @@ def get_total_inventory_value():
 
     return total
 
-# Menghitung jumlah produk berdasarkan kategori.
-def get_product_count_by_category():
-    category_count = {}
-
-    for product in products:
-        category = product["category"]
-
-        if category not in category_count:
-            category_count[category] = 0
-
-        category_count[category] += 1
-
-    return category_count
-
-# Mengambil produk berdasarkan kategori.
-def get_products_by_category(category):
-    """
-    Mengambil produk berdasarkan kategori.
-
-    Return:
-        list produk sesuai kategori
-    """
-
-    if category is None or category.strip() == "":
-        return []
-
-    category = category.lower().strip()
-
-    result = []
-
-    for product in products:
-        if product["category"].lower() == category:
-            result.append(copy_product(product))
-
-    return result
-
 # Mengambil produk dengan stok paling sedikit.
-def get_low_stock_products(limit=5):
-    success, limit = convert_to_int(limit)
+def get_low_stock_products(limit_stock=5):
+    success, limit = convert_to_int(limit_stock)
 
     if not success:
-        limit = 5
+        limit_stock = 5
 
     result = []
 
     for product in products:
-        if product["stock"] <= limit:
+        if product["stock"] <= limit_stock:
             result.append(copy_product(product))
 
     return result
-
-# Menghitung total nilai inventori berdasarkan kategori.
-def get_inventory_value_by_category():
-    category_value = {}
-
-    for product in products:
-        category = product["category"]
-        value = product["price"] * product["stock"]
-
-        if category not in category_value:
-            category_value[category] = 0
-
-        category_value[category] += value
-
-    return category_value

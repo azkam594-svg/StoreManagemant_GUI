@@ -1,16 +1,16 @@
 import tkinter as tk
+import services
+
 from tkinter import ttk, messagebox
-from services.transactions_service import (
-    calculate_balance,
-    export_transactions_csv,
-    get_transactions,
-    get_transaction_summary,
-    record_transaction,
-)
+from utils.formatter import format_rupiah
+
+
+
 
 def show_transactions_page(parent):
     page = TransactionPage(parent)
     page.pack(fill="both", expand=True)
+
 
 class TransactionPage(tk.Frame):
 
@@ -24,6 +24,8 @@ class TransactionPage(tk.Frame):
         self.create_add_transaction_form()
         self.refresh_table()
 
+
+    # HEADER
     def create_header(self):
         title = tk.Label(
             self,
@@ -34,6 +36,8 @@ class TransactionPage(tk.Frame):
         )
         title.pack(anchor="w", padx=30, pady=(30, 15))
 
+
+    # TOOLBAR
     def create_toolbar(self):
         toolbar = tk.Frame(self, bg="#E9E9E9")
         toolbar.pack(fill="x", padx=30)
@@ -61,7 +65,9 @@ class TransactionPage(tk.Frame):
             fg="white",
             command=self.refresh_table
         ).pack(side="left", padx=5)
+        
 
+    # SUMMARY
     def create_summary_frame(self):
         summary_frame = tk.Frame(self, bg="#E9E9E9")
         summary_frame.pack(fill="x", padx=30, pady=(10, 0))
@@ -93,42 +99,177 @@ class TransactionPage(tk.Frame):
         )
         self.total_label.pack(side="left", padx=(0, 20))
 
-        self.balance_label = tk.Label(
+        
+        # BALANCE CARD
+        balance_card = tk.Frame(
             summary_frame,
-            text="Total Pendapatan: Rp 0",
-            font=("Arial", 11, "bold"),
-            bg="#E9E9E9",
-            fg="#0f766e"
+            bg="#F0FDF4",
+            bd=1,
+            relief="solid",
+            padx=0,
+            pady=0
         )
-        self.balance_label.pack(side="left")
+        balance_card.pack(side="right", padx=5, pady=5)
 
+        # Aksen hijau di kiri card
+        accent = tk.Frame(
+            balance_card,
+            bg="#16A34A",
+            width=5
+        )
+        accent.pack(side="left", fill="y")
+
+        balance_content = tk.Frame(
+            balance_card,
+            bg="#F0FDF4",
+            padx=18,
+            pady=10
+        )
+        balance_content.pack(side="left", fill="both")
+
+        balance_title = tk.Label(
+            balance_content,
+            text="Total Pendapatan",
+            font=("Arial", 10),
+            bg="#F0FDF4",
+            fg="#166534"
+        )
+        balance_title.pack(anchor="e")
+
+        self.balance_label = tk.Label(
+            balance_content,
+            text="Rp 0",
+            font=("Arial", 18, "bold"),
+            bg="#F0FDF4",
+            fg="#15803D"
+        )
+        self.balance_label.pack(anchor="e", pady=(3, 0))
+        
+        
+        # EXPENSE CARD
+        expense_card = tk.Frame(
+            summary_frame,
+            bg="#FEF2F2",
+            bd=1,
+            relief="solid",
+            padx=0,
+            pady=0
+        )
+        expense_card.pack(side="right", padx=5, pady=5)
+
+        expense_accent = tk.Frame(
+            expense_card,
+            bg="#DC2626",
+            width=5
+        )
+        expense_accent.pack(side="left", fill="y")
+
+        expense_content = tk.Frame(
+            expense_card,
+            bg="#FEF2F2",
+            padx=18,
+            pady=10
+        )
+        expense_content.pack(side="left", fill="both")
+
+        expense_title = tk.Label(
+            expense_content,
+            text="Total Pengeluaran",
+            font=("Arial", 10),
+            bg="#FEF2F2",
+            fg="#991B1B"
+        )
+        expense_title.pack(anchor="e")
+
+        self.expense_label = tk.Label(
+            expense_content,
+            text="Rp 0",
+            font=("Arial", 18, "bold"),
+            bg="#FEF2F2",
+            fg="#DC2626"
+        )
+        self.expense_label.pack(anchor="e", pady=(3, 0))
+
+    # TABLE
     def create_table(self):
-
-        columns = (
-            "id",
-            "sku",
-            "type",
-            "quantity",
-            "amount",
-            "date"
-        )
-
-        self.table = ttk.Treeview(
-            self,
-            columns=columns,
-            show="headings"
-        )
-
-        for col in columns:
-            self.table.heading(col, text=col.upper())
-
-        self.table.pack(
+        table_frame = tk.Frame(self, bg="#E9E9E9")
+        table_frame.pack(
             fill="both",
             expand=True,
             padx=30,
             pady=20
         )
 
+        columns = (
+            "id",
+            "product_id",
+            "product_name",
+            "type",
+            "quantity",
+            "price",
+            "discount_percent",
+            "final_price",
+            "total_price",
+            "date",
+            "status"
+        )
+
+        self.table = ttk.Treeview(
+            table_frame,
+            columns=columns,
+            show="headings"
+        )
+
+        self.table.heading("id", text="ID")
+        self.table.heading("product_id", text="ID Produk")
+        self.table.heading("product_name", text="Nama Produk")
+        self.table.heading("type", text="Tipe")
+        self.table.heading("quantity", text="Jumlah")
+        self.table.heading("price", text="Harga Asli")
+        self.table.heading("discount_percent", text="Diskon")
+        self.table.heading("final_price", text="Harga Akhir")
+        self.table.heading("total_price", text="Total")
+        self.table.heading("date", text="Tanggal")
+        self.table.heading("status", text="Status")
+
+        self.table.column("id", width=60, anchor="center")
+        self.table.column("product_id", width=90, anchor="center")
+        self.table.column("product_name", width=180)
+        self.table.column("type", width=90, anchor="center")
+        self.table.column("quantity", width=80, anchor="center")
+        self.table.column("price", width=120, anchor="e")
+        self.table.column("discount_percent", width=80, anchor="center")
+        self.table.column("final_price", width=120, anchor="e")
+        self.table.column("total_price", width=130, anchor="e")
+        self.table.column("date", width=160, anchor="center")
+        self.table.column("status", width=100, anchor="center")
+
+        y_scrollbar = ttk.Scrollbar(
+            table_frame,
+            orient="vertical",
+            command=self.table.yview
+        )
+
+        x_scrollbar = ttk.Scrollbar(
+            table_frame,
+            orient="horizontal",
+            command=self.table.xview
+        )
+
+        self.table.configure(
+            yscrollcommand=y_scrollbar.set,
+            xscrollcommand=x_scrollbar.set
+        )
+
+        self.table.grid(row=0, column=0, sticky="nsew")
+        y_scrollbar.grid(row=0, column=1, sticky="ns")
+        x_scrollbar.grid(row=1, column=0, sticky="ew")
+
+        table_frame.grid_rowconfigure(0, weight=1)
+        table_frame.grid_columnconfigure(0, weight=1)
+
+
+    # ADD TRANSACTION FORM
     def create_add_transaction_form(self):
         form_frame = tk.LabelFrame(
             self,
@@ -149,6 +290,7 @@ class TransactionPage(tk.Frame):
         ).grid(row=0, column=0, sticky="w")
 
         self.type_var = tk.StringVar(value="Keluar")
+
         self.type_selector = ttk.Combobox(
             form_frame,
             textvariable=self.type_var,
@@ -160,13 +302,13 @@ class TransactionPage(tk.Frame):
 
         tk.Label(
             form_frame,
-            text="SKU:",
+            text="ID Produk:",
             bg="#E9E9E9",
             font=("Arial", 10)
         ).grid(row=0, column=2, sticky="w")
 
-        self.sku_entry = tk.Entry(form_frame, width=18)
-        self.sku_entry.grid(row=0, column=3, padx=10, pady=5)
+        self.product_id_entry = tk.Entry(form_frame, width=18)
+        self.product_id_entry.grid(row=0, column=3, padx=10, pady=5)
 
         tk.Label(
             form_frame,
@@ -186,67 +328,110 @@ class TransactionPage(tk.Frame):
             command=self.add_transaction
         ).grid(row=0, column=6, padx=10, pady=5)
 
+
+    # REFRESH TABLE
     def refresh_table(self):
         self.table.delete(*self.table.get_children())
+
         self.load_transactions()
         self.refresh_summary()
 
-    def load_transactions(self):
-        from services.transactions_service import get_transaction_amount
 
-        for t in get_transactions():
-            amount = get_transaction_amount(t)
+    # LOAD TRANSACTIONS
+    def load_transactions(self):
+        transaction_list = services.get_transactions()
+
+        for transaction in transaction_list:
             self.table.insert(
                 "",
                 "end",
                 values=(
-                    t.get("id"),
-                    t.get("sku"),
-                    t.get("type"),
-                    t.get("quantity"),
-                    f"Rp {amount:,}",
-                    t.get("date"),
-                ),
+                    transaction.get("id"),
+                    transaction.get("product_id"),
+                    transaction.get("product_name"),
+                    transaction.get("type"),
+                    transaction.get("quantity"),
+                    format_rupiah(transaction.get("price", 0)),
+                    f"{transaction.get('discount_percent', 0)}%",
+                    format_rupiah(transaction.get("final_price", 0)),
+                    format_rupiah(transaction.get("total_price", 0)),
+                    transaction.get("date"),
+                    transaction.get("status"),
+                )
             )
 
+
+    # REFRESH SUMMARY
     def refresh_summary(self):
-        summary = get_transaction_summary()
-        self.masuk_label.config(text=f"Transaksi Masuk: {summary['masuk']}")
-        self.keluar_label.config(text=f"Transaksi Keluar: {summary['keluar']}")
-        self.total_label.config(text=f"Total Transaksi: {summary['total']}")
-        self.balance_label.config(
-            text=f"Total Pendapatan: Rp {summary['total_sales']:,}"
+        summary = services.get_transaction_summary()
+
+        self.masuk_label.config(
+            text=f"Transaksi Masuk: {summary['masuk']}"
         )
 
+        self.keluar_label.config(
+            text=f"Transaksi Keluar: {summary['keluar']}"
+        )
+
+        self.total_label.config(
+            text=f"Total Transaksi: {summary['total']}"
+        )
+
+        self.balance_label.config(
+            text=format_rupiah(summary["total_sales"])
+        )
+
+        self.expense_label.config(
+            text=format_rupiah(summary["total_expense"])
+        )
+
+
+
+# BUTTON CALLBACK
+    # ADD TRANSACTION
     def add_transaction(self):
-        sku = self.sku_entry.get().strip()
-        quantity_text = self.quantity_entry.get().strip()
+        product_id = self.product_id_entry.get().strip()
+        quantity = self.quantity_entry.get().strip()
         transaction_type = self.type_var.get()
 
         try:
-            quantity = int(quantity_text)
-            record_transaction(sku, quantity, transaction_type)
+            services.record_transaction(
+                product_id=product_id,
+                quantity=quantity,
+                transaction_type=transaction_type
+            )
+
             messagebox.showinfo(
                 "Transaksi Disimpan",
-                f"Transaksi {transaction_type} untuk SKU {sku} berhasil disimpan."
+                f"Transaksi {transaction_type} untuk produk ID {product_id} berhasil disimpan."
             )
-            self.sku_entry.delete(0, "end")
+
+            self.product_id_entry.delete(0, "end")
             self.quantity_entry.delete(0, "end")
+
             self.refresh_table()
+
         except ValueError as error:
             messagebox.showwarning("Kesalahan Transaksi", str(error))
+
         except Exception as error:
             messagebox.showerror("Kesalahan", str(error))
 
+    # SHOW BALANCE
     def show_balance(self):
-        total = calculate_balance()
+        summary = services.get_transaction_summary()
+
         messagebox.showinfo(
             "Saldo Store",
-            f"Total Pendapatan: Rp {total:,}"
+            f"Total Pendapatan: {format_rupiah(summary['total_sales'])}\n"
+            f"Total Pengeluaran: {format_rupiah(summary['total_expense'])}\n"
+            f"Saldo Bersih: {format_rupiah(summary['net_balance'])}"
         )
 
+    # EXPORT CSV
     def export_csv(self):
-        file = export_transactions_csv()
+        file = services.export_transactions_csv()
+
         messagebox.showinfo(
             "Export CSV",
             f"Data berhasil diexport ke {file}"
