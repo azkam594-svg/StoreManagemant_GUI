@@ -1,6 +1,6 @@
 from data.database import products, promotions, transactions
 
-
+# from utils.formatter import format_rupiah
 
 # CONVERT VALUE TO INTEGER
 

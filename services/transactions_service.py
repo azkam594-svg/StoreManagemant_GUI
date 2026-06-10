@@ -1,4 +1,5 @@
 from data.database import transactions, products, promotions
+from .products_service import get_product_status
 import csv
 from datetime import datetime
 
@@ -217,10 +218,12 @@ def record_transaction(product_id, quantity, transaction_type):
         total_price = final_price * quantity
 
         product["stock"] -= quantity
+        product["status"] = get_product_status(product["stock"])
 
     elif transaction_type == "Masuk":
         total_price = price * quantity
         product["stock"] += quantity
+        product["status"] = get_product_status(product["stock"])
 
     new_transaction = {
         "id": get_next_transaction_id(),

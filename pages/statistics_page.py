@@ -372,10 +372,13 @@ class StatisticsPage(tk.Frame):
                 fontweight="bold"
             )
             chart.set_ylabel("Pendapatan")
+            
             chart.yaxis.set_major_formatter(
-                FuncFormatter(format_rupiah)
+                FuncFormatter(lambda value, position: format_rupiah(value))
             )
             chart.tick_params(axis="x", rotation=20)
+            
+            
 
         figure.tight_layout()
 
@@ -529,7 +532,7 @@ class StatisticsPage(tk.Frame):
                     transaction["product_name"],
                     transaction["type"],
                     transaction["quantity"],
-                    self.format_rupiah(transaction["total_price"]),
+                    format_rupiah(transaction["total_price"]),
                     transaction["date"],
                     transaction["status"]
                 )
