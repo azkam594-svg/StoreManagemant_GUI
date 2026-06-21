@@ -12,7 +12,6 @@ def show_products_page(parent):
     page.pack(fill="both", expand=True)
 
 
-
 # PRODUCT PAGE
 class ProductPage(tk.Frame):
     
@@ -22,12 +21,10 @@ class ProductPage(tk.Frame):
         # Variable untuk menyimpan keyword pencarian
         self.search_var = tk.StringVar()
 
-        # Membuat bagian-bagian halaman
         self.create_header()
         self.create_toolbar()
         self.create_table()
 
-        # Load data produk ke tabel saat halaman pertama dibuka
         self.load_products()
 
 
